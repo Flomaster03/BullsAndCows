@@ -1,0 +1,39 @@
+const val NUMBER = "1234"
+
+fun main() {
+
+    val input = readln()
+    printResult(input)
+}
+
+//проверка сколько быков и коров в вводимом числе
+fun checkNumber(input: String): Array<Int> {
+    var bull = 0
+    var cow = 0
+    for (i in input.indices) {
+        for (j in NUMBER.indices) {
+            if (input[i] == NUMBER[j]) {
+                if (i == j) bull += 1 else cow += 1
+            } else {
+                continue
+            }
+        }
+    }
+    return arrayOf(bull, cow)
+}
+
+//вывод результата сколько быков и коров
+fun printResult(input: String) {
+    val result = checkNumber(input)
+    val ifBullTrue = result[0] != 0
+    val ifCowTrue = result[1] != 0
+    val sb = buildString() {
+        append("Grade: ")
+        if (ifBullTrue) append("${result[0]} bull(s)")
+        if (ifBullTrue && ifCowTrue) append(" and ")
+        if (ifCowTrue) append("${result[1]} cow(s)")
+        if (!ifBullTrue && !ifCowTrue) append("None")
+        append(". The secret code is $NUMBER.")
+    }
+    println(sb)
+}
