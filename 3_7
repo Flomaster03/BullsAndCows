@@ -1,0 +1,20 @@
+import kotlin.random.Random
+
+fun main() {
+
+    val inputNumber = readln().toInt()
+    val number = createNumber(inputNumber)
+    println(
+        if (inputNumber > 10) "Error: can't generate a secret number with a length of $inputNumber because there aren't enough unique digits."
+        else number
+    )
+}
+
+fun createNumber(inputNumber: Int): String {
+    var number = Random.nextInt(1, 10).toString()
+    while (number.length < inputNumber) {
+        val a = Random.nextInt(0, 10).toString()
+        if (!number.contains(a)) number += a else continue
+    }
+    return number
+}
