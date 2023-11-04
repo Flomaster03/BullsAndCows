@@ -1,0 +1,93 @@
+import kotlin.random.Random
+
+const val MAX_NUMBER_OF_CHARS = 36
+var secretNumber = ""
+
+fun main() {
+
+    println("Please, enter the secret code's length:")
+    val lengthOfCode = readln().toInt() //сколько символов должно быть в секретном коде
+    val countOfCharsInCode = readln().toInt()//количество символов из которых состоит секретный код
+    createNumber(lengthOfCode, countOfCharsInCode)
+    println("Okay, let's start a game!")
+    var turn = 1 //счетчик уровней
+    while (true) {
+        println("Turn $turn:")
+        val inputForGuess = readln() //игрок вводит число - кандидат(строковый формат!)
+        turn++
+        if (checkNumber(inputForGuess, lengthOfCode)) break else continue
+    }
+}
+
+//создание случайного числа - входное значение количество разрядов этого числа
+fun createNumber(lengthOfCode: Int, countOfCharsInCode: Int) {
+    if (lengthOfCode > MAX_NUMBER_OF_CHARS) {
+        println("Error: can't generate a secret number with a length of $lengthOfCode because there aren't enough unique digits.")
+        return
+    }
+    var range = ""
+    var printRange = ""
+    if (countOfCharsInCode <= 10) {
+        range = ('0' until '0' + countOfCharsInCode).joinToString("")
+        printRange = "(0-${'0' + (countOfCharsInCode - 1)})"
+    } else {
+        val diff = countOfCharsInCode - 10
+        range = (('0'..'9') + ('a' until 'a' + diff)).joinToString("")
+        printRange = "(0-9, a-${'a' + (diff - 1)})"
+    }
+    var str = ""
+    while (str.length < lengthOfCode) {
+        val number = Random.nextInt(0, range.length)
+        str += range[number]
+        range = range.removeRange(number, number + 1)
+    }
+    secretNumber = str
+    print("The secret is prepared: ")
+    repeat(lengthOfCode) {
+        print('*')
+    }
+    print(" $printRange.\n")
+}
+
+//проверка + печать в консоль количество быков и коров: eсли количество быков = количеству символов в коде, возвращает true, если нет false
+fun checkNumber(inputForGuess: String, lengthOfCode: Int): Boolean {
+    val bullsAndCows = calculationNumber(inputForGuess)
+    if (bullsAndCows[0] == lengthOfCode) {
+        printResult(bullsAndCows)
+        println("Congratulations! You guessed the secret code.")
+        return true
+    } else {
+        printResult(bullsAndCows)
+        return false
+    }
+}
+
+//проверка сколько быков и коров в вводимом числе
+fun calculationNumber(inputForGuess: String): Array<Int> {
+    var bull = 0
+    var cow = 0
+    for (i in inputForGuess.indices) {
+        for (j in secretNumber.indices) {
+            if (inputForGuess[i] == secretNumber[j]) {
+                if (i == j) bull += 1 else cow += 1
+            } else {
+                continue
+            }
+        }
+    }
+    return arrayOf(bull, cow)
+}
+
+//печать результата сколько быков и коров
+fun printResult(bullsAndCows: Array<Int>) {
+    val ifBullTrue = bullsAndCows[0] != 0
+    val ifCowTrue = bullsAndCows[1] != 0
+    val sb = buildString() {
+        append("Grade: ")
+        if (ifBullTrue) append("${bullsAndCows[0]} ${if (bullsAndCows[0] == 1) "bull" else "bulls"} ")
+        if (ifBullTrue && ifCowTrue) append(" and ")
+        if (ifCowTrue) append("${bullsAndCows[1]} ${if (bullsAndCows[1] == 1) "cow" else "cows"} ")
+        if (!ifBullTrue && !ifCowTrue) append("None")
+    }
+    println(sb)
+}
