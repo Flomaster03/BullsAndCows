@@ -1,0 +1,75 @@
+import kotlin.random.Random
+
+var secretNumber = ""
+
+fun main() {
+
+    println("Please, enter the secret code's length:")
+    val countOfDigits = readln().toInt() //сколько цифр должно быть в секретном числе
+    createNumber(countOfDigits)
+    println("Okay, let's start a game!")
+    var turn = 1 //счетчик уровней
+    while (true) {
+        println("Turn $turn:")
+        val input = readln() //игрок вводит число - кандидат(строковый формат!)
+        turn++
+        if (checkNumber(input, countOfDigits)) break else continue
+    }
+}
+
+//создание случайного числа - входное значение количество разрядов этого числа
+fun createNumber(inputNumber: Int) {
+    if (inputNumber > 10) {
+        println("Error: can't generate a secret number with a length of $inputNumber because there aren't enough unique digits.")
+        return
+    }
+    var number = Random.nextInt(1, 10).toString()
+    while (number.length < inputNumber) {
+        val a = Random.nextInt(0, 10).toString()
+        if (!number.contains(a)) number += a else continue
+    }
+    secretNumber = number
+}
+
+//проверка + печать в консоль количество быков и коров: eсли 4 быка возвращает true, если нет false
+fun checkNumber(input: String, countOfDigits: Int): Boolean {
+    val bullsAndCows = calculationNumber(input)
+    if (bullsAndCows[0] == countOfDigits) {
+        printResult(bullsAndCows)
+        println("Congratulations! You guessed the secret code.")
+        return true
+    } else {
+        printResult(bullsAndCows)
+        return false
+    }
+}
+
+//проверка сколько быков и коров в вводимом числе
+fun calculationNumber(input: String): Array<Int> {
+    var bull = 0
+    var cow = 0
+    for (i in input.indices) {
+        for (j in secretNumber.indices) {
+            if (input[i] == secretNumber[j]) {
+                if (i == j) bull += 1 else cow += 1
+            } else {
+                continue
+            }
+        }
+    }
+    return arrayOf(bull, cow)
+}
+
+//печать результата сколько быков и коров
+fun printResult(bullsAndCows: Array<Int>) {
+    val ifBullTrue = bullsAndCows[0] != 0
+    val ifCowTrue = bullsAndCows[1] != 0
+    val sb = buildString() {
+        append("Grade: ")
+        if (ifBullTrue) append("${bullsAndCows[0]} ${if (bullsAndCows[0] == 1) "bull" else "bulls"} ")
+        if (ifBullTrue && ifCowTrue) append(" and ")
+        if (ifCowTrue) append("${bullsAndCows[1]} ${if (bullsAndCows[1] == 1) "cow" else "cows"} ")
+        if (!ifBullTrue && !ifCowTrue) append("None")
+    }
+    println(sb)
+}
