@@ -1,13 +1,13 @@
+package bullscows
+
 import kotlin.random.Random
 
 fun main() {
 
     val inputNumber = readln().toInt()
-    val number = createNumber(inputNumber)
-    println(
-        if (inputNumber > 10) "Error: can't generate a secret number with a length of $inputNumber because there aren't enough unique digits."
-        else number
-    )
+    println(if (inputNumber > 10) "Error: can't generate a secret number with a length of 11 because there aren't enough unique digits." else
+    "The random secret number is ${createNumber(inputNumber)}.")
+
 }
 
 fun createNumber(inputNumber: Int): String {
