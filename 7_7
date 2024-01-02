@@ -1,3 +1,5 @@
+package bullscows
+
 import kotlin.random.Random
 
 const val MAX_NUMBER_OF_CHARS = 36
@@ -114,7 +116,7 @@ fun checkCountOfCharsInCode(lengthOfCode: Int): Int {
             println("Error: maximum number of possible symbols in the code is $MAX_NUMBER_OF_CHARS (0-9, a-z).")
             return -2
         }
-        input.toInt() < lengthOfCode -> {
+        input.toInt() < lengthOfCode || lengthOfCode == 0 -> {
             println("Error: it's not possible to generate a code with a length of $lengthOfCode with ${input.toInt()} unique symbols.")
             return -3
         }
